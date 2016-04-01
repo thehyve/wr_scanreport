@@ -86,6 +86,9 @@ class ScanReport(object):
             return self.scan_tables[ tablename_key ]
         except KeyError:
             raise Exception("Could not find table name '%s'" % table_name)
+    
+    def getScanTables( self ):
+        return self.scan_tables.values()
         
     def getValueFrequencyByIdentifier( self, table_name, field_name, value_name ):
         sTable = self.getScanTable( table_name )            
@@ -96,6 +99,31 @@ class ScanReport(object):
             raise Exception("Could not find value name '%s'" % value_name)
             
         return frequency
+        
+    def mergeScanReport( self, scan_report_to_add ):
+        """ Merges current scan report with a second scan_report.
+            All frequencies are added up. If table/field/value not already present, then create new."""
+        
+        # For every table, for every field, add frequencies
+        tables_to_add = scan_report_to_add.getScanTables()        
+        for table in tables_to_add:
+            table_name = table.name
+            fields = table.getScanFields()
+            
+            for field in fields:  
+                field_name = field.name
+                values = field.getValues()
+                
+                for value in values:
+                    frequency = field.getFrequencyByValue( value )
+                    self._addFrequencyByIdentifier( frequency, table_name, field_name, value )
+    
+    def _addFrequencyByIdentifier( self, frequency_to_add, table_name, field_name, value_name ):
+        # Create or return table/field if already exists
+        scan_table = self.createScanTable( table_name )
+        scan_field = scan_table.createScanField( field_name )
+        scan_field.addToFrequency( value_name, frequency_to_add )
+        
         
     def createDummyData( self, folder, n_rows ):
         pass

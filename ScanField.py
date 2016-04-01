@@ -24,8 +24,8 @@ class ScanField(object):
         
     def setValueFrequency( self, value, frequency ):
         """ Sets the frequency, returns False if value already exists."""        
-        if value in self.value_frequencies:
-            return False
+#        if value in self.value_frequencies:
+#            return False
         
         frequency = int(frequency)
         value_key = str(value).lower()
@@ -40,6 +40,11 @@ class ScanField(object):
         """ Returns False if value not exists. Effectively a zero. """
         value_key = str(value).lower()
         return self.value_frequencies.get( value_key, False ) 
+        
+    def addToFrequency( self, value, frequency_to_add ):
+        """ Add frequency_to_add to the current frequency of value. Creates new value if value not yet present. """
+        new_frequency = self.getFrequencyByValue( value ) + frequency_to_add
+        self.setValueFrequency( value, new_frequency )
     
     def getValues( self ):
         return self.value_frequencies.keys()
