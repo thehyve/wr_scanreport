@@ -15,11 +15,28 @@ class ScanTable(object):
     
     def createScanField( self, fieldname ):
         """ Create new scan field and return it or return existing if fieldname already present """
-        if fieldname not in self.scan_fields:
-            self.scan_fields[ fieldname ] = ScanField( fieldname )
+        field_key = str(fieldname).lower()
+        if field_key not in self.scan_fields:
+            self.scan_fields[ field_key ] = ScanField( fieldname )
         
-        return self.scan_fields.get( fieldname )
+        return self.scan_fields.get( field_key )
         
-    def getScanFieldByName( self, fieldname ):
+    def getScanField( self, fieldname ):
         """ Get existing scan field or returns False if not exists"""
-        return self.scan_fields.get( fieldname, False )
+        field_key = str(fieldname).lower()
+        try:
+            return self.scan_fields[ field_key ]
+        except KeyError:
+            raise Exception("Could not find field name '%s' in table '%s'" % (fieldname, self.name) )
+        
+    def getFieldNames( self ):
+        return sorted( [scanField.name for scanField in self.scan_fields.values()] )
+        
+    def getScanFields( self ):
+        return self.scan_fields.values()
+        
+    def printTotals( self ):
+        for scanField in self.getScanFields():
+            print "{:20.20} {:8}".format(scanField.name, scanField.total_frequency)
+        
+            

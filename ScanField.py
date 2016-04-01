@@ -18,16 +18,37 @@ class ScanField(object):
         self.fraction_empty = None
         
         self.value_frequencies = dict()
+        self.total_frequency = 0
+        self.max_frequency = 0
+        self.min_frequency = 999999999
         
     def setValueFrequency( self, value, frequency ):
         """ Sets the frequency, returns False if value already exists."""        
         if value in self.value_frequencies:
             return False
         
-        self.value_frequencies[ str(value) ] = int(frequency)
-        return True
+        frequency = int(frequency)
+        value_key = str(value).lower()
+        self.value_frequencies[ value_key ] = frequency
+        
+        # Update additional parameters
+        self.total_frequency += frequency
+        self.max_frequency = max( [self.max_frequency, frequency] )
+        self.min_frequency = min( [self.min_frequency, frequency] )
+        
+    def getFrequencyByValue( self, value ):
+        """ Returns False if value not exists. Effectively a zero. """
+        value_key = str(value).lower()
+        return self.value_frequencies.get( value_key, False ) 
     
-    def getValueFrequency( self, value ):
-        return self.value_frequencies.get( value, False ) #return false if not exists
-    
-    
+    def getValues( self ):
+        return self.value_frequencies.keys()
+        
+    def printFrequencies( self, n = None, reverse = True ):
+        if not n:
+            n = len(self.value_frequencies)
+        
+        items = sorted( self.value_frequencies.items(), key = lambda x: x[1], reverse = reverse )
+        
+        for value, frequency in items[:n]:
+            print "{:20.20} {:8}".format(value, frequency)
