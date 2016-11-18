@@ -4,7 +4,7 @@ Created on Fri Apr  1 15:03:47 2016
 
 @author: Maxim
 """
-
+import numpy.random as rand
 
 class ScanField(object):
     """ Fieldname and frequencies of unique values """
@@ -21,6 +21,8 @@ class ScanField(object):
         self.total_frequency = 0
         self.max_frequency = 0
         self.min_frequency = 999999999
+        self.n = 0 #number of unique values
+        self.probabilities = None
         
     def setValueFrequency( self, value, frequency ):
         """ Sets the frequency, returns False if value already exists."""        
@@ -28,17 +30,18 @@ class ScanField(object):
 #            return False
         
         frequency = int(frequency)
-        value_key = str(value).lower()
+        value_key = value#.lower()
         self.value_frequencies[ value_key ] = frequency
         
         # Update additional parameters
         self.total_frequency += frequency
         self.max_frequency = max( [self.max_frequency, frequency] )
         self.min_frequency = min( [self.min_frequency, frequency] )
+        self.n += 1
         
     def getFrequencyByValue( self, value ):
         """ Returns False if value not exists. Effectively a zero. """
-        value_key = str(value).lower()
+        value_key = str(value)#.lower()
         return self.value_frequencies.get( value_key, False ) 
         
     def addToFrequency( self, value, frequency_to_add ):
@@ -52,8 +55,24 @@ class ScanField(object):
     def printFrequencies( self, n = None, reverse = True ):
         if not n:
             n = len(self.value_frequencies)
-        
+    
         items = sorted( self.value_frequencies.items(), key = lambda x: x[1], reverse = reverse )
         
         for value, frequency in items[:n]:
             print "{:20.20} {:8}".format(value, frequency)
+            
+    def getProbabilities( self ):
+        if not self.probabilities:
+            frequencies = self.value_frequencies.values()
+            self.probabilities = [float(x)/self.total_frequency for x in frequencies]
+        return self.probabilities
+    
+    def createSyntheticValue( self, random = True, row_number = None ):
+        values = self.getValues()
+        if random:
+            probabilities = self.getProbabilities()
+            value = rand.choice(values, p=probabilities)
+        else:
+            i = row_number % self.n
+            value = values[i]
+        return value.encode('ascii','replace') #Problem with encoding

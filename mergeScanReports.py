@@ -9,9 +9,9 @@ import xlrd,copy
 from ScanReport import ScanReport
 
 scanReport1 = ScanReport( 'ScanReport_concept_1.xlsx' )
-scanReport2 = ScanReport( 'ScanReport_concept_2.xlsx' )
+scanReport2 = ScanReport( 'ScanReport_MultiTable.xlsx' )
 
 #Take first report as basis
-scanReportMerge = copy.deepcopy(scanReport1)
+scanReportMerge = copy.deepcopy( scanReport1 )
 scanReportMerge.mergeScanReport( scanReport2 )
 
