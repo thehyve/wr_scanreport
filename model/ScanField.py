@@ -59,12 +59,16 @@ class ScanField(object):
         items = sorted( self.value_frequencies.items(), key = lambda x: x[1], reverse = reverse )
         
         for value, frequency in items[:n]:
-            print "{:20.20} {:8}".format(value, frequency)
+            print("{:20.20} {:8}".format(value, frequency))
             
-    def getProbabilities( self ):
+    def getProbabilities( self, as_tuple_list=False ):
         if not self.probabilities:
-            frequencies = self.value_frequencies.values()
-            self.probabilities = [float(x)/self.total_frequency for x in frequencies]
+            if as_tuple_list:
+                frequencies = self.value_frequencies.items()
+                self.probabilities = [(value, float(x)/self.total_frequency) for (value, x) in frequencies]
+            else:
+                frequencies = self.value_frequencies.values()
+                self.probabilities = [float(x)/self.total_frequency for x in frequencies]
         return self.probabilities
     
     def createSyntheticValue( self, random = True, row_number = None ):

@@ -47,7 +47,7 @@ class ScanTable(object):
         
     def printTotals( self ):
         for scanField in self.getScanFields():
-            print "{:20.20} {:8}".format(scanField.name, scanField.total_frequency)
+            print("{:20.20} {:8}".format(scanField.name, scanField.total_frequency))
             
     def createSyntheticRow( self, random, row_number ):
         result = []

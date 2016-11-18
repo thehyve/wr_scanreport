@@ -30,7 +30,7 @@ class ScanReport(object):
 
         for sheet_table in sheets:
             self._processSheet( sheet_table )
-
+        
         return True
 
 
@@ -38,7 +38,7 @@ class ScanReport(object):
         """ Processes value frequencies from one table. Returns the number of scan fields added to scanTable """
         # Create new Dcan Table object.
         table_name = sheet_table.name
-        print "%s -- %d" % (table_name, sheet_table.ncols)
+        print("%s -- %d" % (table_name, sheet_table.ncols))
         scanTable = self.createScanTable( table_name )
 
         # Every two columns is a pair of term values and term frequencies
@@ -55,9 +55,13 @@ class ScanReport(object):
             # Get terms and frequencies belonging to this column.
             # Skip first column
             # Number of rows is as long as longest column. Means a lot of empty rows for some columns.
-            term_values = sheet_table.col( i, 1)
-            term_frequencies = sheet_table.col( i + 1, 1 )
-
+            try:
+                #print("Number of columns: {!s}.\ni: {!s}\nAt sheet: {}".format(sheet_table.ncols, i, table_name))
+                term_values = sheet_table.col( i, 1)
+                term_frequencies = sheet_table.col( i + 1, 1 )
+            except:
+                print("Number of columns: {!s}.\ni: {!s}\nAt sheet: {}".format(sheet_table.ncols, i, table_name))
+                raise Exception()
             term_pairs = zip( term_values, term_frequencies )
 
             for term_value_cell, term_freq_cell in term_pairs:
