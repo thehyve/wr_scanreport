@@ -10,25 +10,23 @@ from ScanTable import ScanTable
 
 class ScanReport(object):
 
-    def __init__( self, filename = None, skip_first_tab = True ):
+    def __init__( self, filename = None ):
         self.filename = filename
         self.scan_tables = dict()
 
         if filename:
-            self.loadFromFile( filename, skip_first_tab )
+            self.loadFromFile( filename )
 
-    def loadFromFile( self, filename, skip_first_tab ):
+    def loadFromFile( self, filename ):
         """ Loads file and fills ScanTable and ScanFields
             Returns true if success."""
 
         wb = xlrd.open_workbook( filename )
         sheets = wb.sheets()
 
-        if skip_first_tab:
-            sheet_overview = sheets.pop(0)
-            #TODO: process the overview sheet (n_rows, type, etc.)
-
         for sheet_table in sheets:
+            if sheet_table.name == 'Overview':
+                continue
             self._processSheet( sheet_table )
         
         return True
