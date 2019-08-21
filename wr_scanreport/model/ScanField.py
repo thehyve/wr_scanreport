@@ -4,7 +4,8 @@ Created on Fri Apr  1 15:03:47 2016
 
 @author: Maxim
 """
-import numpy.random as rand
+import numpy as np
+
 
 class ScanField(object):
     """ Fieldname and frequencies of unique values """
@@ -75,7 +76,7 @@ class ScanField(object):
         values = self.getValues()
         if random:
             probabilities = self.getProbabilities()
-            value = rand.choice(values, p=probabilities)
+            value = np.random.choice(values, p=probabilities)
         else:
             i = row_number % self.n
             value = values[i]

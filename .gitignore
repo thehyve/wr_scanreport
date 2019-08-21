@@ -1,0 +1,30 @@
+# Module specific
+data/
+!data/ScanReport_concept_1.xlsx
+output/
+example_scripts/
+
+# General
+*.pyc
+venv/
+bin/
+build/
+develop-eggs/
+dist/
+eggs/
+lib/
+lib64/
+parts/
+sdist/
+var/
+*.egg-info/
+.installed.cfg
+*.egg
+*.eggs
+.mypy_cache/
+.vscode
+.ipynb_checkpoints
+
+# IDEA
+.idea/
+*.iml

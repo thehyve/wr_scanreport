@@ -4,8 +4,8 @@ Created on Fri Apr  1 15:02:46 2016
 
 @author: Maxim
 """
-from ScanField import ScanField
-import numpy
+from .ScanField import ScanField
+
 
 class ScanTable(object):
     """ All info of all fields of one table in a Scan Report """
@@ -32,8 +32,8 @@ class ScanTable(object):
         except KeyError:
             raise Exception("Could not find field name '%s' in table '%s'" % (fieldname, self.name) )
         
-    def getFieldNames( self, sorted = False ):
-        if sorted:
+    def getFieldNames( self, do_sort = False ):
+        if do_sort:
             # Original function
             fieldnames = [scanField.name for scanField in self.scan_fields.values()]
             return sorted( fieldnames )
@@ -52,12 +52,6 @@ class ScanTable(object):
     def createSyntheticRow( self, random, row_number ):
         result = []
         for field in self.getScanFields():
-            if field.name.lower() == 'lpnr':
-                value = numpy.random.randint(50000)
-                value = str(value)
-            else:
-                value = field.createSyntheticValue(random, row_number)
+            value = field.createSyntheticValue(random, row_number)
             result.append(value)
         return result
-        
-            

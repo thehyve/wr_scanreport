@@ -5,8 +5,12 @@ Created on Fri Apr  1 15:00:03 2016
 @author: Maxim
 """
 
-import xlrd,csv,codecs
-from ScanTable import ScanTable
+import codecs
+import csv
+import xlrd
+
+from .ScanTable import ScanTable
+
 
 class ScanReport(object):
 
