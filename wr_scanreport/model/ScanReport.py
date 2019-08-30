@@ -14,41 +14,42 @@ from .ScanTable import ScanTable
 
 class ScanReport(object):
 
-    def __init__( self, filename = None ):
+    def __init__(self, filename=None, verbose=False):
         self.filename = filename
         self.scan_tables = dict()
+        self.verbose = verbose
 
         if filename:
-            self.loadFromFile( filename )
+            self.loadFromFile(filename)
 
-    def loadFromFile( self, filename ):
+    def loadFromFile(self, filename):
         """ Loads file and fills ScanTable and ScanFields
             Returns true if success."""
 
-        wb = xlrd.open_workbook( filename )
+        wb = xlrd.open_workbook(filename)
         sheets = wb.sheets()
 
         for sheet_table in sheets:
             if sheet_table.name == 'Overview':
                 continue
-            self._processSheet( sheet_table )
+            self._processSheet(sheet_table)
         
         return True
 
-
-    def _processSheet( self, sheet_table ):
+    def _processSheet(self, sheet_table):
         """ Processes value frequencies from one table. Returns the number of scan fields added to scanTable """
         # Create new Dcan Table object.
         table_name = sheet_table.name
-        print("%s -- %d" % (table_name, sheet_table.ncols))
-        scanTable = self.createScanTable( table_name )
+        if self.verbose:
+            print("%s -- %d" % (table_name, sheet_table.ncols))
+        scanTable = self.createScanTable(table_name)
 
         # Every two columns is a pair of term values and term frequencies
         column_indices = range( 0, sheet_table.ncols, 2)
 
         n_columns_processed = 0
         for i in column_indices:
-            #Name of the column at first row, left.
+            # Name of the column at first row, left.
             column_name_cell = sheet_table.cell( 0, i )
             column_name = column_name_cell.value
 
@@ -58,11 +59,13 @@ class ScanReport(object):
             # Skip first column
             # Number of rows is as long as longest column. Means a lot of empty rows for some columns.
             try:
-                #print("Number of columns: {!s}.\ni: {!s}\nAt sheet: {}".format(sheet_table.ncols, i, table_name))
+                if self.verbose:
+                    print("Number of columns: {!s}.\ni: {!s}\nAt sheet: {}".format(sheet_table.ncols, i, table_name))
                 term_values = sheet_table.col( i, 1)
                 term_frequencies = sheet_table.col( i + 1, 1 )
             except:
-                print("Number of columns: {!s}.\ni: {!s}\nAt sheet: {}".format(sheet_table.ncols, i, table_name))
+                if self.verbose:
+                    print("Number of columns: {!s}.\ni: {!s}\nAt sheet: {}".format(sheet_table.ncols, i, table_name))
                 raise Exception()
             term_pairs = zip( term_values, term_frequencies )
 
